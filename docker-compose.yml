@@ -1,0 +1,50 @@
+version: "4.0"
+
+services:
+  coalize-mysql:
+    container_name: coalize-mysql
+    image: mysql:8.0
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: yii2_app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+        - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - coalize-network
+
+  coalize-php:
+    container_name: coalize-php
+    restart: unless-stopped
+    tty: true
+    build:
+      context: .
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - coalize-mysql
+    networks:
+      - coalize-network
+
+  coalize-nginx:
+    image: nginx:alpine
+    container_name: coalize-nginx
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./sourcefiles/nginx/:/etc/nginx/conf.d/
+    networks:
+      - coalize-network
+    depends_on:
+      - coalize-php
+
+networks:
+  coalize-network:
+    driver: bridge
