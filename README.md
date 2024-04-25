@@ -89,20 +89,13 @@ docker-compose run --rm php composer update --prefer-dist
 - [POST] http://localhost:8080/v1/product/create
 - [GET] http://localhost:8080/v1/product/index
 
+### Create a new user with curl
 
-CONFIGURATION
--------------
-
-### Database
-
-Edit the file `config/db.php` with real data, for example:
-
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
+```curl
+curl --location 'localhost:8080/v1/auth/register' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "username",
+    "password": "password"
+}'
 ```
